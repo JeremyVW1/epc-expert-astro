@@ -1,0 +1,46 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../../i18n";
+import { SITE } from "../../content/site";
+import { SERVICES } from "../../content/services";
+import { breadcrumbSchema } from "../../utils/schema";
+
+const lang = getLangFromUrl(Astro.url);
+const schemas = [breadcrumbSchema([
+  { name: "Home", url: SITE.website },
+  { name: t(lang, "nav.diensten"), url: `${SITE.website}/diensten` },
+])];
+---
+
+<PageLayout title={t(lang, "meta.dienstenTitle")} description={t(lang, "meta.dienstenDesc")} lang={lang} schema={schemas}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-4xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground text-center mb-4">{t(lang, "services.pageTitle")}</h1>
+      <p class="text-lg text-muted-foreground text-center mb-8">{t(lang, "services.pageSubtitle")}</p>
+
+      <div class="text-muted-foreground leading-relaxed text-center mb-12 max-w-none prose prose-sm [&_a]:text-primary [&_a]:font-semibold [&_strong]:text-foreground" set:html={t(lang, "services.overviewIntro")} />
+
+      <div class="grid md:grid-cols-3 gap-8">
+        {SERVICES.map((s) => (
+          <a href={`/diensten/${s.slug}`} class="bg-muted/50 p-8 rounded-xl hover:shadow-lg transition-shadow group">
+            <h2 class="text-xl font-bold text-foreground mb-2">{t(lang, s.titleKey)}</h2>
+            <p class="text-muted-foreground text-sm mb-4">{t(lang, s.descKey)}</p>
+            <span class="text-primary font-semibold text-sm">{t(lang, "services.readMore")} →</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- When required -->
+      <div class="mt-16 rounded-xl bg-muted p-8">
+        <h2 class="text-2xl font-bold text-foreground mb-4">{t(lang, "services.whenRequiredTitle")}</h2>
+        <div class="text-muted-foreground leading-relaxed prose prose-sm max-w-none [&_ul]:mt-3 [&_ul]:space-y-1 [&_li]:text-muted-foreground [&_a]:text-primary [&_a]:font-semibold [&_strong]:text-foreground" set:html={t(lang, "services.whenRequiredDesc")} />
+      </div>
+
+      <!-- Comparison -->
+      <div class="mt-8 rounded-xl bg-primary/5 border border-primary/10 p-8">
+        <h2 class="text-2xl font-bold text-foreground mb-4">{t(lang, "services.comparisonTitle")}</h2>
+        <div class="text-muted-foreground leading-relaxed prose prose-sm max-w-none [&_a]:text-primary [&_a]:font-semibold [&_strong]:text-foreground" set:html={t(lang, "services.comparisonDesc")} />
+      </div>
+    </div>
+  </section>
+</PageLayout>

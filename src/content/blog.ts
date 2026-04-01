@@ -1,4 +1,4 @@
-import type { Language } from "@/i18n/types";
+import type { Language } from "../i18n/types";
 import { BLOG_POSTS_EN } from "./blog-en";
 import { BLOG_POSTS_FR } from "./blog-fr";
 

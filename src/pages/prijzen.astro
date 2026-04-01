@@ -1,0 +1,58 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../i18n";
+import { SITE } from "../content/site";
+import { PRICING } from "../content/pricing";
+import { breadcrumbSchema } from "../utils/schema";
+
+const lang = getLangFromUrl(Astro.url);
+const schemas = [breadcrumbSchema([
+  { name: "Home", url: SITE.website },
+  { name: t(lang, "nav.prijzen"), url: `${SITE.website}/prijzen` },
+])];
+
+// Show only the 3 main types with fixed prices
+const mainPricing = PRICING.filter((p) => p.price !== null).slice(0, 3);
+---
+
+<PageLayout title={t(lang, "meta.prijzenTitle")} description={t(lang, "meta.prijzenDesc")} lang={lang} schema={schemas}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-5xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground text-center mb-4">{t(lang, "pricing.title")}</h1>
+      <p class="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">{t(lang, "pricing.subtitle")}</p>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {mainPricing.map((item) => (
+          <div class:list={["rounded-2xl p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1", item.popular ? "bg-primary text-primary-foreground ring-2 ring-accent shadow-lg relative" : "bg-card border border-border"]}>
+            {item.popular && <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-accent-foreground text-xs font-bold rounded-full">{t(lang, "pricing.popular")}</span>}
+            <h2 class:list={["text-xl font-bold mb-6", item.popular ? "text-white" : "text-foreground"]}>{t(lang, item.typeKey)}</h2>
+            <p class:list={["text-4xl font-extrabold mb-1", item.popular ? "text-white" : "text-foreground"]}>€{item.price}</p>
+            <p class:list={["text-xs mb-6", item.popular ? "text-white/60" : "text-muted-foreground"]}>{t(lang, "pricing.exclBtw")}</p>
+            <a href="/offerte" class:list={["inline-flex items-center justify-center w-full py-3 font-semibold rounded-lg transition-colors", item.popular ? "bg-accent text-accent-foreground hover:bg-accent-dark" : "bg-primary text-primary-foreground hover:bg-primary/90"]}>
+              {t(lang, "pricing.cta")}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-muted section-padding">
+    <div class="container mx-auto max-w-4xl">
+      <div class="grid sm:grid-cols-3 gap-6">
+        <a href="/werkwijze" class="group flex flex-col gap-2 p-6 rounded-xl border border-border bg-card hover:border-primary hover:shadow-lg transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "nav.werkwijze")}</span>
+          <span class="text-muted-foreground text-sm">Hoe verloopt een EPC-keuring?</span>
+        </a>
+        <a href="/offerte" class="group flex flex-col gap-2 p-6 rounded-xl border border-border bg-card hover:border-primary hover:shadow-lg transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "nav.offerte")}</span>
+          <span class="text-muted-foreground text-sm">Vraag vrijblijvend een offerte aan</span>
+        </a>
+        <a href="/diensten" class="group flex flex-col gap-2 p-6 rounded-xl border border-border bg-card hover:border-primary hover:shadow-lg transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "nav.diensten")}</span>
+          <span class="text-muted-foreground text-sm">Bekijk al onze diensten</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>

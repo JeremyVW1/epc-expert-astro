@@ -1,0 +1,112 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../../i18n";
+import { SITE } from "../../content/site";
+import { REGIONS } from "../../content/regions";
+import { regionSchema, breadcrumbSchema } from "../../utils/schema";
+
+export function getStaticPaths() {
+  return REGIONS.map((r) => ({ params: { slug: r.slug }, props: { region: r } }));
+}
+
+const { region } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+
+const title = t(lang, "meta.regionTitle", { city: region.name });
+const desc = t(lang, "meta.regionDesc", { city: region.name });
+
+const schemas = [
+  regionSchema(region.name),
+  breadcrumbSchema([
+    { name: "Home", url: `${SITE.website}/` },
+    { name: t(lang, "nav.regio"), url: `${SITE.website}/regio` },
+    { name: region.name, url: `${SITE.website}/regio/${region.slug}` },
+  ]),
+];
+
+const localFaq = [
+  { question: t(lang, "faq.q1"), answer: t(lang, "faq.a1") },
+  { question: t(lang, "faq.q2"), answer: t(lang, "faq.a2") },
+  { question: t(lang, "faq.q10"), answer: t(lang, "faq.a10") },
+];
+---
+
+<PageLayout title={title} description={desc} lang={lang} schema={schemas}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-3xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        EPC Attest Aanvragen in {region.name}
+      </h1>
+      <p class="text-lg text-muted-foreground mb-8">
+        {t(lang, "regions.introText", { city: region.name, distance: String(region.distanceKm) })}
+      </p>
+
+      {region.uniqueContent && (
+        <div class="prose prose-lg max-w-none mb-10">
+          <h2 class="text-2xl font-bold text-foreground mb-4">Woningmarkt & EPC in {region.name}</h2>
+          <p class="text-muted-foreground leading-relaxed">{region.uniqueContent}</p>
+        </div>
+      )}
+
+      {region.highlights && region.highlights.length > 0 && (
+        <div class="bg-muted p-6 rounded-xl mb-10">
+          <h3 class="text-lg font-semibold text-foreground mb-4">Wist u dit over {region.name}?</h3>
+          <ul class="space-y-3">
+            {region.highlights.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 h-2 w-2 rounded-full bg-primary shrink-0"></span>
+                <span class="text-muted-foreground">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div class="bg-primary-light p-8 rounded-xl mb-12">
+        <h2 class="text-xl font-bold text-foreground mb-3">{t(lang, "regions.whyLocalTitle")}</h2>
+        <p class="text-muted-foreground">{t(lang, "regions.whyLocalText")}</p>
+      </div>
+
+      <!-- Internal cross-links -->
+      <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        <a href="/diensten/residentieel" class="p-4 rounded-xl border border-border bg-card hover:border-primary hover:shadow-md transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "services.residential.title")}</span>
+        </a>
+        <a href="/werkwijze" class="p-4 rounded-xl border border-border bg-card hover:border-primary hover:shadow-md transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "nav.werkwijze")}</span>
+        </a>
+        <a href="/blog/wat-is-een-epc-certificaat" class="p-4 rounded-xl border border-border bg-card hover:border-primary hover:shadow-md transition-all">
+          <span class="text-sm font-semibold text-primary">Wat is een EPC?</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-padding bg-muted">
+    <div class="container mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-foreground mb-6">
+        {t(lang, "regions.faqTitle", { city: region.name })}
+      </h2>
+      {localFaq.map((item) => (
+        <details class="group border-b border-border">
+          <summary class="flex items-center justify-between py-4 cursor-pointer text-foreground font-medium hover:text-primary transition-colors">
+            {item.question}
+            <svg class="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" /></svg>
+          </summary>
+          <div class="pb-4 text-muted-foreground text-sm leading-relaxed" set:html={item.answer} />
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-gradient-to-br from-primary via-primary to-[hsl(var(--primary-dark))] section-padding">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-bold text-white mb-4 font-display">{t(lang, "cta.title")}</h2>
+      <a href="/offerte" class="inline-flex items-center gap-2 px-8 py-4 bg-accent text-accent-foreground font-bold text-lg rounded-xl hover:bg-accent-dark transition-all shadow-lg">
+        {t(lang, "cta.button")}
+      </a>
+    </div>
+  </section>
+</PageLayout>

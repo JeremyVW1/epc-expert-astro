@@ -1,0 +1,67 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../../i18n";
+import { SITE } from "../../content/site";
+import { SERVICES } from "../../content/services";
+import { breadcrumbSchema } from "../../utils/schema";
+
+export function getStaticPaths() {
+  return SERVICES.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const lang = getLangFromUrl(Astro.url);
+const service = SERVICES.find((s) => s.slug === slug)!;
+const prefix = service.keyPrefix;
+
+const schemas = [breadcrumbSchema([
+  { name: "Home", url: SITE.website },
+  { name: t(lang, "nav.diensten"), url: `${SITE.website}/diensten` },
+  { name: t(lang, service.titleKey), url: `${SITE.website}/diensten/${slug}` },
+])];
+
+const sections = [
+  { titleKey: `${prefix}.whatTitle`, descKey: `${prefix}.whatDesc` },
+  { titleKey: `${prefix}.inspectionTitle`, descKey: `${prefix}.inspectionDesc` },
+  { titleKey: `${prefix}.documentsTitle`, descKey: `${prefix}.documentsDesc` },
+  { titleKey: `${prefix}.durationTitle`, descKey: `${prefix}.durationDesc` },
+  { titleKey: `${prefix}.pricingTitle`, descKey: `${prefix}.pricingDesc` },
+  { titleKey: `${prefix}.legalTitle`, descKey: `${prefix}.legalDesc` },
+];
+---
+
+<PageLayout title={`${t(lang, service.titleKey)} | EPC Expert`} description={t(lang, service.descKey)} lang={lang} schema={schemas}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-3xl">
+      <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-8">{t(lang, `${prefix}.fullTitle`)}</h1>
+
+      <div class="divide-y divide-border">
+        {sections.map(({ titleKey, descKey }) => (
+          <div class="py-8">
+            <h2 class="text-xl font-bold text-foreground mb-3">{t(lang, titleKey)}</h2>
+            <div class="text-muted-foreground leading-relaxed prose prose-sm max-w-none [&_ul]:mt-3 [&_ul]:space-y-1 [&_li]:text-muted-foreground [&_a]:text-primary [&_a]:font-semibold [&_strong]:text-foreground" set:html={t(lang, descKey)} />
+          </div>
+        ))}
+      </div>
+
+      <!-- CTA + cross-links -->
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 items-center">
+        <a href="/offerte" class="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors">
+          {t(lang, "services.requestQuote")}
+        </a>
+        <a href="/prijzen" class="text-primary font-semibold hover:underline">{t(lang, "nav.prijzen")} →</a>
+      </div>
+
+      <div class="mt-10 grid sm:grid-cols-2 gap-4">
+        <a href="/regio" class="p-4 rounded-xl border border-border bg-muted/50 hover:border-primary hover:shadow-md transition-all">
+          <span class="text-sm font-semibold text-primary">{t(lang, "nav.regio")}</span>
+          <p class="text-xs text-muted-foreground mt-1">Bekijk in welke gemeenten wij actief zijn</p>
+        </a>
+        <a href="/blog/epc-verplicht-wanneer" class="p-4 rounded-xl border border-border bg-muted/50 hover:border-primary hover:shadow-md transition-all">
+          <span class="text-sm font-semibold text-primary">Wanneer is een EPC verplicht?</span>
+          <p class="text-xs text-muted-foreground mt-1">Lees meer over de wettelijke verplichting</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>

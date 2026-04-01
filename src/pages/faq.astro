@@ -1,0 +1,68 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../i18n";
+import { SITE } from "../content/site";
+import { faqSchema, breadcrumbSchema } from "../utils/schema";
+
+const lang = getLangFromUrl(Astro.url);
+
+// Build FAQ items server-side
+const faqItems: { question: string; answer: string }[] = [];
+for (let i = 1; i <= 26; i++) {
+  faqItems.push({ question: t(lang, `faq.q${i}`), answer: t(lang, `faq.a${i}`) });
+}
+
+const categories = [
+  { title: t(lang, "faq.generalTitle"), items: faqItems.slice(0, 5) },
+  { title: t(lang, "faq.procedureTitle"), items: faqItems.slice(5, 9) },
+  { title: t(lang, "faq.pricingTitle"), items: faqItems.slice(9, 11) },
+  { title: t(lang, "faq.recoTitle"), items: faqItems.slice(11, 14) },
+  { title: t(lang, "faq.legislationTitle"), items: faqItems.slice(14, 16) },
+  { title: t(lang, "faq.durationTitle"), items: faqItems.slice(16, 19) },
+  { title: t(lang, "faq.costRegionTitle"), items: faqItems.slice(19, 20) },
+  { title: t(lang, "faq.improvementTitle"), items: faqItems.slice(20, 23) },
+  { title: t(lang, "faq.obligationsTitle"), items: faqItems.slice(23, 26) },
+];
+
+const schemas = [
+  faqSchema(faqItems),
+  breadcrumbSchema([
+    { name: "Home", url: SITE.website },
+    { name: "FAQ", url: `${SITE.website}/faq` },
+  ]),
+];
+---
+
+<PageLayout title={t(lang, "meta.faqTitle")} description={t(lang, "meta.faqDesc")} lang={lang} schema={schemas}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-3xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground text-center mb-12">{t(lang, "faq.title")}</h1>
+
+      {categories.map((cat) => (
+        <div class="mb-10">
+          <h2 class="text-xl font-bold text-foreground mb-4">{cat.title}</h2>
+          {cat.items.map((item) => (
+            <details class="group border-b border-border">
+              <summary class="flex items-center justify-between py-4 cursor-pointer text-foreground font-medium hover:text-primary transition-colors">
+                {item.question}
+                <svg class="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" /></svg>
+              </summary>
+              <div class="pb-4 text-muted-foreground text-sm leading-relaxed" set:html={item.answer} />
+            </details>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-gradient-to-br from-primary via-primary to-[hsl(var(--primary-dark))] section-padding">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-display">{t(lang, "cta.title")}</h2>
+      <p class="text-white/80 text-lg mb-8 max-w-xl mx-auto">{t(lang, "cta.subtitle")}</p>
+      <a href="/offerte" class="inline-flex items-center gap-2 px-8 py-4 bg-accent text-accent-foreground font-bold text-lg rounded-xl hover:bg-accent-dark transition-all shadow-lg">
+        {t(lang, "cta.button")}
+      </a>
+    </div>
+  </section>
+</PageLayout>
