@@ -1,0 +1,2 @@
+# 301 redirect www to non-www (permanent)
+https://www.epc-expert.be/* https://epc-expert.be/:splat 301

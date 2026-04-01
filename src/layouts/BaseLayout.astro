@@ -1,0 +1,72 @@
+---
+import "../styles/global.css";
+import { SITE } from "../content/site";
+import { toBCP47 } from "../i18n";
+import type { Language } from "../i18n";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  lang?: Language;
+  schema?: object | object[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = `${SITE.website}/images/epc-expert-og.png`,
+  lang = "nl",
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.website).href;
+const bcp47 = toBCP47(lang);
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+
+const hreflangBase = canonicalUrl.split("?")[0];
+---
+
+<!doctype html>
+<html lang={bcp47}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="EPC Expert BV" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="nl-BE" href={hreflangBase} />
+    <link rel="alternate" hreflang="fr-BE" href={`${hreflangBase}?lang=fr`} />
+    <link rel="alternate" hreflang="en" href={`${hreflangBase}?lang=en`} />
+    <link rel="alternate" hreflang="x-default" href={hreflangBase} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    {schemas.map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
