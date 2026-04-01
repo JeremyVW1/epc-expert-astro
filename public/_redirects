@@ -1,2 +1,1 @@
-# 301 redirect www to non-www (permanent)
-https://www.epc-expert.be/* https://epc-expert.be/:splat 301
+# www to non-www is handled by Cloudflare DNS (CNAME www -> epc-expert.be)
