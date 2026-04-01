@@ -1,0 +1,15 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../i18n";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<PageLayout title={t(lang, "meta.asbestTitle")} description={t(lang, "meta.asbestDesc")} lang={lang}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-3xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground text-center mb-8">{t(lang, "asbestPage.title")}</h1>
+      <div class="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-a:text-primary prose-strong:text-foreground [&_ul]:mt-3 [&_ul]:space-y-1" set:html={t(lang, "asbestPage.content")} />
+    </div>
+  </section>
+</PageLayout>

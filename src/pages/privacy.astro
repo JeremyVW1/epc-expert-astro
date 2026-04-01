@@ -1,0 +1,15 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { t, getLangFromUrl } from "../i18n";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<PageLayout title={`${t(lang, "privacy.heading")} | EPC Expert`} description="Privacybeleid van EPC Expert BV" lang={lang} noindex={true}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-3xl">
+      <h1 class="text-4xl font-bold text-foreground text-center mb-8">{t(lang, "privacy.heading")}</h1>
+      <div class="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-foreground" set:html={t(lang, "privacy.content")} />
+    </div>
+  </section>
+</PageLayout>

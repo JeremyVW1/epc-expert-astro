@@ -1,0 +1,37 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { t } from "../i18n";
+
+const lang = "nl";
+
+const links = [
+  { to: "/", label: t(lang, "nav.home") },
+  { to: "/diensten", label: t(lang, "nav.diensten") },
+  { to: "/prijzen", label: t(lang, "nav.prijzen") },
+  { to: "/contact", label: "Contact" },
+  { to: "/offerte", label: t(lang, "nav.offerte") },
+  { to: "/faq", label: "FAQ" },
+];
+---
+
+<PageLayout title="Pagina niet gevonden | EPC Expert" description="Deze pagina bestaat niet." lang={lang} noindex={true}>
+  <section class="section-padding min-h-[60vh] flex items-center">
+    <div class="container mx-auto max-w-3xl text-center">
+      <h1 class="text-7xl md:text-9xl font-extrabold text-primary/20 mb-2">404</h1>
+      <h2 class="text-2xl md:text-3xl font-bold text-foreground mb-4">{t(lang, "notFound.title")}</h2>
+      <p class="text-muted-foreground text-lg mb-8">{t(lang, "notFound.message")}</p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-lg mx-auto mb-10">
+        {links.map((link) => (
+          <a href={link.to} class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border bg-card text-foreground hover:border-primary hover:text-primary hover:shadow-md transition-all text-sm font-medium">
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <a href="/" class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+        {t(lang, "notFound.backHome")}
+      </a>
+    </div>
+  </section>
+</PageLayout>

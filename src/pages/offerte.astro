@@ -1,0 +1,51 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import OfferteForm from "../components/islands/OfferteForm";
+import { t, getLangFromUrl } from "../i18n";
+import { SITE } from "../content/site";
+
+const lang = getLangFromUrl(Astro.url);
+
+const labels = {
+  name: t(lang, "offerte.name"), email: t(lang, "offerte.email"),
+  phone: t(lang, "offerte.phone"), street: t(lang, "offerte.street"),
+  postalCode: t(lang, "offerte.postalCode"), city: t(lang, "offerte.city"),
+  propertyType: t(lang, "offerte.propertyType"), reason: t(lang, "offerte.reason"),
+  preferredDate: t(lang, "offerte.preferredDate"), preferredTime: t(lang, "offerte.preferredTime"),
+  hasFloorPlan: t(lang, "offerte.hasFloorPlan"), remarks: t(lang, "offerte.remarks"),
+  gdpr: t(lang, "offerte.gdpr"), submit: t(lang, "offerte.submit"),
+  sending: t(lang, "offerte.sending"), required: t(lang, "offerte.validation.required"),
+  emailInvalid: t(lang, "offerte.validation.email"),
+  gdprRequired: t(lang, "offerte.validation.gdpr"),
+  successTitle: t(lang, "offerte.successTitle"),
+  successMessage: t(lang, "offerte.successMessage"),
+  errorMessage: t(lang, "offerte.errorMessage"),
+  trustResponse: t(lang, "offerte.trustResponse"),
+};
+
+const propertyTypes = ["appartement", "rijwoning", "eengezinswoning", "villa", "niet_residentieel", "gemeenschappelijke_delen", "andere"].map(v => ({ value: v, label: t(lang, `offerte.propertyTypes.${v}`) }));
+const reasons = ["verkoop", "verhuur", "renovatie", "andere"].map(v => ({ value: v, label: t(lang, `offerte.reasons.${v}`) }));
+const timeSlots = ["voormiddag", "namiddag", "avond_weekend", "geen_voorkeur"].map(v => ({ value: v, label: t(lang, `offerte.timeSlots.${v}`) }));
+const floorPlanOptions = ["ja", "nee", "onbekend"].map(v => ({ value: v, label: t(lang, `offerte.floorPlanOptions.${v}`) }));
+---
+
+<PageLayout title={t(lang, "meta.offerteTitle")} description={t(lang, "meta.offerteDesc")} lang={lang}>
+  <section class="section-padding">
+    <div class="container mx-auto max-w-5xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground text-center mb-4">{t(lang, "offerte.title")}</h1>
+      <p class="text-muted-foreground text-center mb-12">{t(lang, "offerte.subtitle")}</p>
+
+      <OfferteForm
+        client:load
+        labels={labels}
+        propertyTypes={propertyTypes}
+        reasons={reasons}
+        timeSlots={timeSlots}
+        floorPlanOptions={floorPlanOptions}
+        sitPhone={SITE.phone}
+        sitPhoneHref={SITE.phoneHref}
+        sitEmail={SITE.email}
+      />
+    </div>
+  </section>
+</PageLayout>
