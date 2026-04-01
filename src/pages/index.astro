@@ -2,19 +2,28 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import { SITE } from "../content/site";
 import { REGIONS } from "../content/regions";
+import { PRICING } from "../content/pricing";
 import { t, getLangFromUrl } from "../i18n";
-import { localBusinessSchema, serviceSchema, breadcrumbSchema } from "../utils/schema";
+import { localBusinessSchema, serviceSchema, faqSchema, breadcrumbSchema } from "../utils/schema";
 import heroImage from "../assets/hero-houses-v5.jpg";
 
 const lang = getLangFromUrl(Astro.url);
 
+// FAQ items for preview
+const faqItems: { question: string; answer: string }[] = [];
+for (let i = 1; i <= 5; i++) {
+  faqItems.push({ question: t(lang, `faq.q${i}`), answer: t(lang, `faq.a${i}`) });
+}
+
 const schemas = [
   localBusinessSchema(),
   serviceSchema(),
+  faqSchema(faqItems),
   breadcrumbSchema([{ name: "Home", url: `${SITE.website}/` }]),
 ];
 
 const showRegions = REGIONS.filter((r) => r.showOnSite);
+const mainPricing = PRICING.filter((p) => p.price !== null).slice(0, 3);
 ---
 
 <PageLayout
@@ -24,7 +33,7 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
   lang={lang}
   schema={schemas}
 >
-  <!-- Hero -->
+  <!-- 1. Hero -->
   <section aria-label="Hero" class="relative overflow-hidden min-h-[600px] md:min-h-[700px] flex items-center">
     <div class="absolute inset-0">
       <img src={heroImage.src} alt="Belgische woningen in Vlaams-Brabant" class="w-full h-full object-cover" width="1920" height="1080" />
@@ -49,6 +58,27 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
               {t(lang, "hero.ctaSecondary")}
             </a>
           </div>
+          <!-- Trust bar -->
+          <div class="mt-10 flex flex-wrap gap-6">
+            <div class="flex items-center gap-2 text-sm font-medium text-white/80">
+              <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                <svg class="h-4 w-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              {t(lang, "hero.trustVea")}
+            </div>
+            <div class="flex items-center gap-2 text-sm font-medium text-white/80">
+              <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                <svg class="h-4 w-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+              </div>
+              {t(lang, "hero.trust48h")}
+            </div>
+            <div class="flex items-center gap-2 text-sm font-medium text-white/80">
+              <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                <svg class="h-4 w-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
+              </div>
+              {t(lang, "hero.trustLang")}
+            </div>
+          </div>
         </div>
         <!-- EPC scale -->
         <div class="hidden lg:flex flex-col gap-2.5 pl-8">
@@ -70,7 +100,7 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
     </div>
   </section>
 
-  <!-- Urgency banner -->
+  <!-- 2. Urgency banner -->
   <section class="bg-gradient-to-r from-accent/10 via-accent/5 to-accent/10 py-5 border-y border-accent/20">
     <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4">
       <p class="text-foreground font-medium text-center sm:text-left">{t(lang, "urgency.text")}</p>
@@ -80,8 +110,123 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
     </div>
   </section>
 
-  <!-- Regions -->
-  <section aria-label="Servicegebied" class="section-padding bg-background">
+  <!-- 3. Werkwijze (4 stappen) -->
+  <section aria-label="Werkwijze" class="section-padding bg-background">
+    <div class="container mx-auto">
+      <p class="text-center text-primary font-semibold text-sm uppercase tracking-wider mb-3">Werkwijze</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display">{t(lang, "werkwijze.title")}</h2>
+      <p class="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">Van aanvraag tot certificaat in 4 eenvoudige stappen</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        {[
+          { num: "1", titleKey: "werkwijze.step1title", descKey: "werkwijze.step1desc" },
+          { num: "2", titleKey: "werkwijze.step2title", descKey: "werkwijze.step2desc" },
+          { num: "3", titleKey: "werkwijze.step3title", descKey: "werkwijze.step3desc" },
+          { num: "4", titleKey: "werkwijze.step4title", descKey: "werkwijze.step4desc" },
+        ].map(({ num, titleKey, descKey }) => (
+          <div class="relative text-center p-6 rounded-2xl bg-card border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center shadow-md">{num}</div>
+            <div class="w-14 h-14 mx-auto mb-4 mt-2 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <svg class="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            </div>
+            <h3 class="text-lg font-bold text-foreground mt-1">{t(lang, titleKey)}</h3>
+            <p class="text-sm text-muted-foreground mt-2" set:html={t(lang, descKey)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Why EPC Expert -->
+  <section class="section-padding bg-gradient-to-br from-primary to-[hsl(var(--primary-dark))]">
+    <div class="container mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-12 font-display">{t(lang, "why.title")}</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        {[
+          { titleKey: "why.vea", descKey: "why.veaDesc" },
+          { titleKey: "why.fast", descKey: "why.fastDesc" },
+          { titleKey: "why.local", descKey: "why.localDesc" },
+          { titleKey: "why.multilang", descKey: "why.multilangDesc" },
+        ].map(({ titleKey, descKey }) => (
+          <div class="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/15 transition-all duration-300 h-full">
+            <h3 class="text-lg font-bold text-white">{t(lang, titleKey)}</h3>
+            <p class="text-sm text-white/70 mt-2" set:html={t(lang, descKey)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Pricing -->
+  <section class="section-padding bg-background">
+    <div class="container mx-auto max-w-5xl">
+      <p class="text-center text-primary font-semibold text-sm uppercase tracking-wider mb-3">Tarieven</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display">{t(lang, "pricing.title")}</h2>
+      <p class="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">{t(lang, "pricing.subtitle")}</p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {mainPricing.map((item) => (
+          <div class:list={["rounded-2xl p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1", item.popular ? "bg-primary text-primary-foreground ring-2 ring-accent shadow-lg relative" : "bg-card border border-border"]}>
+            {item.popular && <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-accent-foreground text-xs font-bold rounded-full">{t(lang, "pricing.popular")}</span>}
+            <h3 class:list={["text-xl font-bold mb-6", item.popular ? "text-white" : "text-foreground"]}>{t(lang, item.typeKey)}</h3>
+            <p class:list={["text-4xl font-extrabold mb-1", item.popular ? "text-white" : "text-foreground"]}>€{item.price}</p>
+            <p class:list={["text-xs mb-6", item.popular ? "text-white/60" : "text-muted-foreground"]}>{t(lang, "pricing.exclBtw")}</p>
+            <a href="/offerte" class:list={["inline-flex items-center justify-center w-full py-3 font-semibold rounded-lg transition-colors", item.popular ? "bg-accent text-accent-foreground hover:bg-accent-dark" : "bg-primary text-primary-foreground hover:bg-primary/90"]}>
+              {t(lang, "pricing.cta")}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Education -->
+  <section class="section-padding bg-secondary">
+    <div class="container mx-auto">
+      <p class="text-center text-primary font-semibold text-sm uppercase tracking-wider mb-3">Informatie</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground text-center mb-12 font-display">{t(lang, "education.title")}</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        {[
+          { titleKey: "education.obligatory", descKey: "education.obligatoryDesc" },
+          { titleKey: "education.upgrade", descKey: "education.upgradeDesc" },
+          { titleKey: "education.save", descKey: "education.saveDesc" },
+          { titleKey: "education.goal2050", descKey: "education.goal2050Desc" },
+        ].map(({ titleKey, descKey }) => (
+          <div class="bg-card p-6 rounded-2xl shadow-sm border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
+            <h3 class="text-lg font-bold text-foreground">{t(lang, titleKey)}</h3>
+            <p class="text-sm text-muted-foreground mt-2" set:html={t(lang, descKey)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. EPC Labels -->
+  <section class="section-padding bg-background">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display">{t(lang, "epcLabels.title")}</h2>
+      <p class="text-muted-foreground text-center mb-10 max-w-2xl mx-auto">{t(lang, "epcLabels.subtitle")}</p>
+      <div class="space-y-3 max-w-2xl mx-auto">
+        {[
+          { label: "A+", range: "0 - 100", color: "bg-[hsl(var(--epc-a-plus))]", w: "14%" },
+          { label: "A", range: "100 - 200", color: "bg-[hsl(var(--epc-a))]", w: "28%" },
+          { label: "B", range: "200 - 300", color: "bg-[hsl(var(--epc-b))]", w: "42%" },
+          { label: "C", range: "300 - 400", color: "bg-[hsl(var(--epc-c))]", w: "57%" },
+          { label: "D", range: "400 - 500", color: "bg-[hsl(var(--epc-d))]", w: "71%" },
+          { label: "E", range: "500 - 600", color: "bg-[hsl(var(--epc-e))]", w: "85%" },
+          { label: "F", range: "600+", color: "bg-[hsl(var(--epc-f))]", w: "100%" },
+        ].map(({ label, range, color, w }) => (
+          <div class="flex items-center gap-4">
+            <div class={`${color} text-white font-bold rounded-r-xl flex items-center justify-between px-4 h-10 shadow-sm`} style={`width:${w}`}>
+              <span>{label}</span>
+            </div>
+            <span class="text-sm text-muted-foreground whitespace-nowrap">{range} {t(lang, "epcLabels.unit")}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Regions -->
+  <section aria-label="Servicegebied" class="section-padding bg-secondary">
     <div class="container mx-auto">
       <p class="text-center text-primary font-semibold text-sm uppercase tracking-wider mb-3">Regio</p>
       <h2 class="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display">{t(lang, "regions.title")}</h2>
@@ -96,7 +241,29 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- 9. FAQ Preview -->
+  <section aria-label="Veelgestelde vragen" class="section-padding bg-background">
+    <div class="container mx-auto max-w-3xl">
+      <h2 class="text-3xl font-bold text-foreground text-center mb-8 font-display">{t(lang, "faq.title")}</h2>
+      {faqItems.map((item) => (
+        <details class="group border-b border-border">
+          <summary class="flex items-center justify-between py-4 cursor-pointer text-foreground font-medium hover:text-primary transition-colors">
+            {item.question}
+            <svg class="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" /></svg>
+          </summary>
+          <div class="pb-4 text-muted-foreground text-sm leading-relaxed" set:html={item.answer} />
+        </details>
+      ))}
+      <div class="text-center mt-8">
+        <a href="/faq" class="inline-flex items-center gap-1 text-primary font-semibold hover:underline">
+          {t(lang, "faq.viewAll")}
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7 7 7-7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. CTA -->
   <section class="bg-gradient-to-br from-primary via-primary to-[hsl(var(--primary-dark))] section-padding">
     <div class="container mx-auto text-center">
       <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-display">{t(lang, "cta.title")}</h2>
@@ -108,6 +275,18 @@ const showRegions = REGIONS.filter((r) => r.showOnSite);
       <p class="mt-6 text-white/70">
         <a href={SITE.phoneHref} class="hover:text-white transition-colors font-semibold text-lg">{SITE.phone}</a>
       </p>
+    </div>
+  </section>
+
+  <!-- 11. Asbest banner -->
+  <section class="section-padding bg-muted">
+    <div class="container mx-auto max-w-4xl text-center">
+      <p class="text-primary font-semibold text-sm uppercase tracking-wider mb-3">{t(lang, "asbestPage.bannerLabel")}</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-foreground mb-4">{t(lang, "asbestPage.bannerTitle")}</h2>
+      <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">{t(lang, "asbestPage.bannerDesc")}</p>
+      <a href="/asbestattest" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-md">
+        {t(lang, "asbestPage.bannerCta")}
+      </a>
     </div>
   </section>
 </PageLayout>
