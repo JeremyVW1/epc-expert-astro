@@ -1,1 +1,35 @@
-# www to non-www is handled by Cloudflare DNS (CNAME www -> epc-expert.be)
+# ── Canonical domain: non-www ──
+# Note: www → non-www 301 must be configured in Cloudflare Dashboard:
+# Rules > Redirect Rules > "www to apex" (see below)
+
+# ── Old index.html URLs ──
+/index.html   /   301
+/index.html*  /   301
+
+# ── Old form.html from pre-Astro site ──
+/form.html    /offerte   301
+
+# ── Old locale prefixes (taal via ?lang= param, niet via /fr/ /en/) ──
+/fr    /?lang=fr   301
+/fr/*  /?lang=fr   301
+/en    /?lang=en   301
+/en/*  /?lang=en   301
+
+# ── Trailing slash → clean URL (build.format: "file") ──
+/diensten/    /diensten   301
+/prijzen/     /prijzen    301
+/regio/       /regio      301
+/werkwijze/   /werkwijze  301
+/faq/         /faq        301
+/offerte/     /offerte    301
+/contact/     /contact    301
+/over-ons/    /over-ons   301
+/voorbereiding/   /voorbereiding   301
+/asbestattest/    /asbestattest    301
+/privacy/     /privacy    301
+/blog/        /blog       301
+
+# ── Old PDF assets (no longer hosted) ──
+/Info_pdf_voor_site-CERTIFICAAT.pdf    /   301
+/Info_pdf_voor_site-BEWIJSSTUKKEN.pdf  /   301
+/Info_pdf_voor_site-BEREKENEN.pdf      /   301

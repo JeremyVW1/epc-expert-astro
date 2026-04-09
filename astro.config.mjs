@@ -6,6 +6,8 @@ import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://epc-expert.be",
+  trailingSlash: "never",
+  build: { format: "file" },
   integrations: [
     react(),
     sitemap({
