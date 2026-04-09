@@ -40,4 +40,4 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://epc-expert.be/sitemap.xml
+Sitemap: https://epc-expert.be/sitemap-index.xml
